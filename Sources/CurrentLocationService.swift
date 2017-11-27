@@ -11,10 +11,13 @@ import CoreLocation
 
 public class CurrentLocationService: LocationService {
 
-    public private(set) var currentLocationHandler : CurrentUserLocationHandler?
+    public private(set) var currentLocation: CLLocation?
+
+    public private(set) var currentLocationHandler: CurrentUserLocationHandler?
 
     public typealias CurrentUserLocationHandler = (_ location: CLLocation) -> ()
     public func currentLocation(complition: @escaping CurrentUserLocationHandler) {
+        self.currentLocationHandler = complition
         self.startUpdatingLocation()
     }
 
@@ -24,6 +27,7 @@ public class CurrentLocationService: LocationService {
 extension CurrentLocationService {
 
     private func p_processUpdateLocations(locations: [CLLocation]) {
+        guard self.currentLocation == nil else { return }
 
         let recentLocation: CLLocation? = locations.max { (a, b) -> Bool in
             return a.timestamp > b.timestamp
@@ -32,6 +36,7 @@ extension CurrentLocationService {
         guard let currentLocation = recentLocation else { return }
         print("LocationService: \(currentLocation)")
         guard let handler = self.currentLocationHandler else { return }
+        self.currentLocation = currentLocation
         handler(currentLocation)
         self.stopUpdatingLocation()
     }
@@ -46,3 +51,5 @@ extension CurrentLocationService {
     }
 
 }
+
+
