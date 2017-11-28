@@ -21,6 +21,10 @@ public class CurrentLocationService: LocationService {
         self.startUpdatingLocation()
     }
 
+    public func resetCurrentLocation() {
+        self.currentLocation = nil
+    }
+
 }
 
 // MARK: - CLLocationManagerDelegate
